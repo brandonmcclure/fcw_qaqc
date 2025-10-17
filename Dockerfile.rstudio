@@ -1,0 +1,7 @@
+FROM rocker/rstudio:4.2.2
+
+USER 0
+RUN apt-get update && apt-get -y install libglpk-dev
+
+VOLUME /mnt/src
+RUN R -e "install.packages(c('zoo', 'padr', 'plotly', 'feather', 'RcppRoll', 'yaml','ggpubr', 'profvis', 'Rcpp', 'magrittr','arrow','janitor'))"
