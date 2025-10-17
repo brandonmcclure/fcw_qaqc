@@ -1,0 +1,69 @@
+FROM ubuntu:18.04@sha256:152dc042452c496007f07ca9127571cb9c29697f42acbfad72324b2bb2e43c98
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        libfontconfig1-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libtiff-dev \
+        cmake \
+        wget \
+        curl \
+        r-base-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+RUN  wget -c https://cran.r-project.org/src/base/R-3/R-3.2.2.tar.gz \
+    && tar -xf R-3.2.2.tar.gz
+WORKDIR /opt/R-3.2.2
+RUN ./configure --without-x --with-x=no \
+    && make -j9 \
+    && make install
+ENV R_PROFILE_USER=/opt/.Rprofile
+COPY docker.rprofile .Rprofile
+# Requires libssl-dev libcurl4-openssl-dev 
+# RUN R -e "## Default repo \
+# local({r <- getOption('repos') \
+#        r['CRAN'] <- 'https://cran.r-project.org' \
+#        options(repos=r) \
+# })"
+RUN R -e "install.packages('curl',version = '5.2.2' , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('openssl',version = '2.2.1', repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('httr',version = '1.4.7', repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('systemfonts',version = '1.0.0', repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('textshaping',version = '0.2.0', repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('ragg',version = '0.2.0', repos='https://mirror.chpc.utah.edu/pub/cran/')" 
+RUN R -e "install.packages('httr2',version = '1.4.7', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('usethis',version = '3.0.0', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('cli',version = '3.6.3', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('pkgdown', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('rcmdcheck', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('roxygen2', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('rversions', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('urlchecker', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('openssl',version = '2.2.1', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('xml2', , repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN wget https://github.com/r-lib/devtools/archive/refs/tags/v2.2.2.tar.gz \
+    && R CMD INSTALL v2.2.2.tar.gz 
+
+# Packages needed for running fcw_qaqc
+# Requires cmake
+
+RUN R -e "install_version('nloptr',version = '2.2.1', repos = 'https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('data.table', repos = 'https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('tidyverse', version = '2.0.0', repos = 'https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('rvest', repos = 'https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('readxl', repos = 'https://mirror.chpc.utah.edu/pub/cran/')"
+
+RUN R -e "install.packages(c('rstatix', 'car','pbkrtest', 'lme4'), repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages('ggpubr', repos='https://mirror.chpc.utah.edu/pub/cran/')"
+RUN R -e "install.packages(c('lubridate', 'zoo', 'padr', 'plotly', 'feather', 'RcppRoll', 'yaml', 'profvis', 'janitor', 'Rcpp',     'magrittr'), repos='https://mirror.chpc.utah.edu/pub/cran/' )"
+
+# WORKDIR /mnt
+# VOLUME [ "/mnt" ]
+# CMD ["/opt/R", "-e", "library(devtools); devtools::build(path='/mnt', binary = TRUE)"]

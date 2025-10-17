@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/cbl-mariner/base/core:2.0@sha256:12480ee9f027c304fabc17d70afc7d5da6c49ad46f0401947478e7218ea0ff6c
+
+# Install R
+WORKDIR /opt
+RUN tdnf update -y && tdnf install -y wget tar cmake build-essential gcc gfortran glibc glibc-i18n gcc-c++ make texinfo R-core R-core-devel
+ENV USE_PREVIEW_REPO=y
+# Requires libssl-dev libcurl4-openssl-dev on debian trixie
+RUN R -e "install.packages(c('curl', 'openssl'))"
+# Requires libfontconfig1-dev libharfbuzz-dev libfribidi-dev on debian trixie
+RUN R -e "install.packages(c('systemfonts', 'textshaping'))"
+# Requires libfreetype-dev libtiff-dev
+RUN R -e "install.packages('ragg')" 
+RUN R -e "install.packages(c('httr2', 'openssl', 'xml2'))"
+RUN R -e "install.packages(c('usethis', 'pkgdown', 'rcmdcheck', 'roxygen2', 'rversions', 'urlchecker'))"
+RUN R -e "install.packages('devtools')"
+
+WORKDIR /src
+
+COPY . /src
+
+CMD ["R", "-e", "library(devtools); devtools::build(path='/mnt', binary = TRUE)"]

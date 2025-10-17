@@ -1,0 +1,18 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+testing/
+qaqc_files/
+creds/
+# files/folders to untrack for API pulls
+*/apienv/
+*/requirements.txt
+# remove the annoying Mac .DS_Store
+.DS_Store
+**.DS_Store
+# remove linting files
+.lintr/
