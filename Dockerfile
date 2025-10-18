@@ -12,5 +12,6 @@ RUN R -e "install.packages(c('zoo', 'padr', 'plotly', 'feather', 'RcppRoll', 'ya
 
 RUN R -e "install.packages('miniCRAN')"
 
-RUN R -e "library(devtools); devtools::build(path='/tmp', binary = FALSE)"
-CMD ["R", "-e",  "library(miniCRAN); mypackages <- rownames(installed.packages()); makeRepo(mypackages, path = '/mnt/repo', type = 'source', Rversion = '4.2.2'); tags <- 'fcw.qaqc';jpeg(file='depgraph.jpeg');dg <- makeDepGraph(tags, enhances = TRUE, availPkgs = cranJuly2014);set.seed(1);plot(dg, legendPosition = c(-1, 1), vertex.size = 20);dev.off();" ]
+VOLUME "/mnt"
+CMD ["R", "-e", "library(devtools); devtools::build(path='/mnt', binary = FALSE)"]
+
