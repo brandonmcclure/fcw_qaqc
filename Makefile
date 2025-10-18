@@ -3,6 +3,8 @@ REPOSITORY_NAME := brandonmcclure/
 IMAGE_NAME := fcw_qaqc
 TAG := :v1.0
 
+all: run
+
 # Run Options
 getcommitid:
 	$(eval COMMITID = $(shell git log -1 --pretty=format:"%H"))
@@ -21,7 +23,8 @@ build_multiarch:
 	docker buildx build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) --platform $(PLATFORMS) .
 
 run: build
-	docker run -it --rm -v $$(pwd):/mnt $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
+	-mkdir bin
+	docker run -it -u $$(id -u $${USER}):$$(id -g $${USER}) --rm -v $$(pwd)/bin:/mnt $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
 
 run_it: build
 	docker run -it --rm --entrypoint=/bin/bash -v $$(pwd):/mnt $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)

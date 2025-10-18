@@ -24,3 +24,4 @@ ignore_files/
 creds/
 # ignore vs code settings
 .vscode/
+bin/

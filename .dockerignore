@@ -16,3 +16,4 @@ creds/
 **.DS_Store
 # remove linting files
 .lintr/
+bin/
