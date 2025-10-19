@@ -1,0 +1,21 @@
+---
+title: "Using Rstudio docker image as development environment"
+author: "Radical Open Science Syndicate"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Rstudio docker image as development environment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Overview
+
+There is a `Dockerfile.rstudio` image definition in this repo that can be used to stand up a development environment that has all of the library dependencies pre-installed. It can be quickly built and launched from any computer with docker and gnu make installed. run `make run_rstudio` from your terminal to build the image, and launch a container that is you can access at http://localhost:8787. the username is `rstudio` and the password will be displayed in your terminal with the docker logs. If you do not have gnu make but you do have docker you can follow to build the image yourself: docker build -f Dockerfile.rstudio -t ghcr.io/brandonmcclure/fcw_qaqc_rstudio:v1.0
+
+## Why
+
+I am building these docker images to create reproducible builds for this package, and outline a "fire and forget" way to run this code. Specifically, I want to exercise the data/file movement logic in a repeatable way that does not rely on the platform we are developing on or operationalizing this code on. 
+
+## How to run the R code to populate data
+
+After you are logged into rstudio, `file -> Open Project` and navigate to `/mnt/src`. From here you can interact with the repo like you would with a local rstudio. In the `Examples` folder, there is a script called `brandon Rstudio example.R` which can be run to populate Raw zone data from hydrovu. You will need to setup the same variables and files outlined in [Using the Package](./using_the_package_in_rstudio.Rmd), but this is a full script example of this document
