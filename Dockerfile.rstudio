@@ -4,4 +4,5 @@ USER 0
 RUN apt-get update && apt-get -y install libglpk-dev
 
 VOLUME /mnt/src
-RUN R -e "install.packages(c('zoo', 'padr', 'plotly', 'feather', 'RcppRoll', 'yaml','ggpubr', 'profvis', 'Rcpp', 'magrittr','arrow','janitor'))"
+RUN R -e "install.packages('devtools', dependencies=TRUE)"
+RUN R -e "install.packages(c('zoo', 'padr', 'plotly', 'feather', 'RcppRoll', 'yaml','ggpubr', 'profvis', 'Rcpp', 'magrittr','arrow','janitor','tidyverse','readr','readxl', 'purrr'))"
